@@ -33,6 +33,10 @@ std::array<float, 3> pqFormel( float a, float b, float c ) {
 	return { base, rot, isComplex };
 }
 
+float getEquationOutput( float a, float b, float c, float input ) {
+	return (a*pow(input, 2)) + (b*input) + c;
+}
+
 std::array<std::string, 3> stringResult( std::array<float, 3> res ) {
 	std::array<std::string, 3> returnArray;
 
@@ -82,7 +86,8 @@ int main() {
 
 	Equation ekv( A, B, C );
 	ekv.solve();
-	print( "\nResult: " + ekv.solutionStr );
+	print( "\nRoot: " + ekv.solutionStr + "\n-----------------------------" );
 	print( "Symmetry line: x = " + std::to_string(ekv.symmetry) );
+	print( "Vertex: (" + std::to_string(ekv.symmetry) + ", " + std::to_string( getEquationOutput(A,B,C,ekv.symmetry) ) + ")" );
 	return 0;
 }
