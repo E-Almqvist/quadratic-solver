@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 #include <array>
+#include <complex>
+#include <cmath>
 
 void print( std::string txt ) {
 	std::cout << txt << std::endl;
@@ -19,7 +21,7 @@ std::array<float, 3> pqFormel( float a, float b, float c ) {
 	float p = b/a;
 	float q = c/a;
 
-	float base = -(p/2);
+	float base = -(p/2); // middle of the two roots
 	float rotDiff = abs( pow(base, 2) - q );
 	float rot = sqrt( rotDiff );
 
@@ -31,13 +33,14 @@ std::array<float, 3> pqFormel( float a, float b, float c ) {
 	return { base, rot, isComplex };
 }
 
-std::string stringResult( std::array<float, 3> res ) {
-	std::string endStr = "";
-	if( res[2] == 1.0 ) {
-		endStr = "i";
-	}
+std::array<std::string, 3> stringResult( std::array<float, 3> res ) {
+	std::array<std::string, 3> returnArray;
 
-	return std::to_string(res[0]) + " ± " + std::to_string(res[1]) + endStr;
+	std::string endStr = "";
+	if( res[2] == 1 ) { endStr = "i"; }
+	returnArray[0] = std::to_string(res[0]) + " ± " + std::to_string(res[1]) + endStr; // root
+
+	return returnArray;
 }
 
 class Equation {
@@ -47,6 +50,7 @@ class Equation {
 		float c = 0;
 	public:
 		std::array<float, 3> solution;
+		float symmetry = 0;
 		std::string solutionStr = "Not solved";
 		Equation( float A, float B, float C ) {
 			a = A;
@@ -55,8 +59,11 @@ class Equation {
 		}
 
 		void solve() {
-			std::array<float, 3> res = pqFormel( a, b, c );
-			solutionStr = stringResult(res);
+			solution = pqFormel( a, b, c );
+			symmetry = solution[0];
+			// make an array with the solutionos as strings
+			std::array<std::string, 3> res_string = stringResult(solution);
+			solutionStr = res_string[0];
 		}
 };
 
@@ -76,5 +83,6 @@ int main() {
 	Equation ekv( A, B, C );
 	ekv.solve();
 	print( "\nResult: " + ekv.solutionStr );
+	print( "Symmetry line: x = " + std::to_string(ekv.symmetry) );
 	return 0;
 }
